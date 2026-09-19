@@ -28,7 +28,7 @@ class _SplachscreenState extends State<Splachscreen> {
         // User is not logged in, navigate to Login Screen
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
+          MaterialPageRoute(builder: (context) => const Loginscreen()),
         );
       }
     });
