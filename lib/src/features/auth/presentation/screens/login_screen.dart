@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todo/src/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:todo/src/features/auth/presentation/widgets/continue_with_google.dart';
 import 'package:todo/src/features/homescreen/homescreen.dart';
 
@@ -8,7 +9,6 @@ class Loginscreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -32,29 +32,42 @@ class Loginscreen extends ConsumerWidget {
               //calling the email and password textfield widget
               // const Textfield(),
               const SizedBox(height: 20),
-              // Row(
-              //   children: [
-              //     const Expanded(
-              //       child: Divider(
-              //         thickness: 1,
-              //         color:
-              //             Colors.grey, // Or use your subtitle color from theme
-              //       ),
-              //     ),
-              //     Padding(
-              //       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              //       child: Text(
-              //         'OR',
-              //         style: Theme.of(context).textTheme.bodyMedium,
-              //       ),
-              //     ),
-              //     const Expanded(
-              //       child: Divider(thickness: 1, color: Colors.grey),
-              //     ),
-              //   ],
-              // ),
               const SizedBox(height: 20),
-             GoogleSignInButton(onPressed: (){}),
+              GoogleSignInButton(
+                onPressed: () async {
+                  final authNotifier = ref.read(
+                    authControllerProvider.notifier,
+                  );
+                  final currentState = ref.read(authControllerProvider);
+
+                  // Prevent multiple clicks
+                  if (currentState.isLoading) return;
+
+                  final success = await authNotifier.signInWithGoogle();
+
+                  if (!context.mounted) return;
+
+                  if (success) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => const Homescreen()),
+                    );
+                  } else {
+                    final error = ref.read(authControllerProvider).error;
+
+                    // Only show snackbar if there is a real error
+                    if (error != null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(getFriendlyErrorMessage(error)),
+                          backgroundColor: Colors.red,
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    }
+                  }
+                },
+              ),
               Spacer(flex: 2),
             ],
           ),
