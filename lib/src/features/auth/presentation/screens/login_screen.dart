@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todo/src/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:todo/src/features/auth/presentation/controllers/signin_with_google_auth_controller.dart';
 import 'package:todo/src/features/auth/presentation/widgets/continue_with_google.dart';
 import 'package:todo/src/features/homescreen/homescreen.dart';
 
@@ -9,6 +9,9 @@ class Loginscreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+     
+     final authState = ref.watch(authControllerProvider);
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -34,6 +37,7 @@ class Loginscreen extends ConsumerWidget {
               const SizedBox(height: 20),
               const SizedBox(height: 20),
               GoogleSignInButton(
+                isLoading: authState.isLoading,
                 onPressed: () async {
                   final authNotifier = ref.read(
                     authControllerProvider.notifier,

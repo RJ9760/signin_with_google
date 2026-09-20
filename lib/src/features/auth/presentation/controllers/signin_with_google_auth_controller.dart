@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todo/src/features/auth/data/providers/auth_providers.dart';
+import 'package:todo/src/features/auth/data/providers/signin_with_google_auth_providers.dart';
 
 final authControllerProvider =
     AsyncNotifierProvider<AuthController, void>(AuthController.new);
